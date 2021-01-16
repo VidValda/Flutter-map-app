@@ -62,5 +62,6 @@ class _LoadingPageState extends State<LoadingPage> with WidgetsBindingObserver {
     } else if (!gpsActivo) {
       return "Active el gps";
     }
+    return "";
   }
 }
