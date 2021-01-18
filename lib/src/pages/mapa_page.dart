@@ -33,14 +33,18 @@ class _MapaPageState extends State<MapaPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           BtnUbication(),
+          BtnFollowing(),
+          BtnMiRuta(),
         ],
       ),
     );
   }
 
   Widget buildMap(MyUbicationState state) {
-    print(state);
     if (state.existUbication) {
+      // ignore: close_sinks
+      final mapaBloc = BlocProvider.of<MapaBloc>(context);
+      mapaBloc.add(OnLocationUpdate(state.latLng));
       final cameraPosition = new CameraPosition(
         target: state.latLng,
         zoom: 15,
@@ -50,7 +54,11 @@ class _MapaPageState extends State<MapaPage> {
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
-        onMapCreated: BlocProvider.of<MapaBloc>(context).initMap,
+        onMapCreated: mapaBloc.initMap,
+        polylines: mapaBloc.state.polylines.values.toSet(),
+        onCameraMove: (position) {
+          mapaBloc.add(OnMapMoved(position.target));
+        },
       );
     }
     return Text('Ubicando...');
