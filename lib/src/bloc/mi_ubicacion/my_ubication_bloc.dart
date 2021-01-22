@@ -16,9 +16,8 @@ class MyUbicationBloc extends Bloc<MyUbicationEvent, MyUbicationState> {
   void initFollowing() {
     _positionSubscription = Geolocator.getPositionStream(
       desiredAccuracy: LocationAccuracy.high,
-      distanceFilter: 10,
+      distanceFilter: 4,
     ).listen((event) {
-      print(event);
       final newUbication = LatLng(event.latitude, event.longitude);
       add(OnUbicationChange(newUbication));
     });

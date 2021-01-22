@@ -9,6 +9,14 @@ class OnMarcarRecorrido extends MapaEvent {}
 
 class OnFollowing extends MapaEvent {}
 
+class OnBuildRoute extends MapaEvent {
+  final List<LatLng> coords;
+  final double distance;
+  final double duration;
+
+  OnBuildRoute({this.coords, this.distance, this.duration});
+}
+
 class OnMapMoved extends MapaEvent {
   final LatLng mapCenter;
 

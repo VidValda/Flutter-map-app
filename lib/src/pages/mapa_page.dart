@@ -26,8 +26,19 @@ class _MapaPageState extends State<MapaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<MyUbicationBloc, MyUbicationState>(
-        builder: (_, state) => Center(child: buildMap(state)),
+      body: Stack(
+        children: [
+          BlocBuilder<MyUbicationBloc, MyUbicationState>(
+            builder: (_, state) => Center(child: buildMap(state)),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment(0, -0.97),
+              child: SearchBar(),
+            ),
+          ),
+          ManualMarker(),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -49,15 +60,19 @@ class _MapaPageState extends State<MapaPage> {
         target: state.latLng,
         zoom: 15,
       );
-      return GoogleMap(
-        initialCameraPosition: cameraPosition,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        onMapCreated: mapaBloc.initMap,
-        polylines: mapaBloc.state.polylines.values.toSet(),
-        onCameraMove: (position) {
-          mapaBloc.add(OnMapMoved(position.target));
+      return BlocBuilder<MapaBloc, MapaState>(
+        builder: (context, _) {
+          return GoogleMap(
+            initialCameraPosition: cameraPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            onMapCreated: mapaBloc.initMap,
+            polylines: mapaBloc.state.polylines.values.toSet(),
+            onCameraMove: (position) {
+              mapaBloc.add(OnMapMoved(position.target));
+            },
+          );
         },
       );
     }
