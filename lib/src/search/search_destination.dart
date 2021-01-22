@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:mapas_app/src/models/search_result.dart';
+import 'package:mapas_app/src/services/traffic_service.dart';
 
 class SearchDestination extends SearchDelegate<SearchResult> {
   @override
   final String searchFieldLabel;
-  SearchDestination() : this.searchFieldLabel = "Buscar";
+  final TrafficService _trafficService;
+  final LatLng proximity;
+  SearchDestination(this.proximity)
+      : this.searchFieldLabel = "Buscar",
+        this._trafficService = TrafficService();
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -27,6 +33,7 @@ class SearchDestination extends SearchDelegate<SearchResult> {
 
   @override
   Widget buildResults(BuildContext context) {
+    this._trafficService.getResultsQuery(query.trim(), proximity);
     return Text("Build results");
   }
 
