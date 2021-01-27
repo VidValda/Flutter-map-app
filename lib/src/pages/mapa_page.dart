@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapas_app/src/bloc/mapa/mapa_bloc.dart';
 import 'package:mapas_app/src/bloc/mi_ubicacion/my_ubication_bloc.dart';
+import 'package:mapas_app/src/services/traffic_service.dart';
 import 'package:mapas_app/src/widgets/widgets.dart';
 
 class MapaPage extends StatefulWidget {
@@ -19,6 +20,7 @@ class _MapaPageState extends State<MapaPage> {
 
   @override
   void dispose() {
+    TrafficService().closeStream();
     BlocProvider.of<MyUbicationBloc>(context).disposeFollowing();
     super.dispose();
   }

@@ -43,7 +43,7 @@ class SearchBar extends StatelessWidget {
     );
   }
 
-  void retornoBusqueda(BuildContext context, SearchResult result) {
+  void retornoBusqueda(BuildContext context, SearchResult result) async {
     if (result.isCanceled) {
       return;
     }
@@ -51,5 +51,35 @@ class SearchBar extends StatelessWidget {
       BlocProvider.of<SearchBloc>(context).add(OnManual());
       return;
     }
+    calculandoAlert(context);
+    final start = BlocProvider.of<MyUbicationBloc>(context).state.latLng;
+    final end = result.latLng;
+
+    final routeResponse = await TrafficService().getCoordsStartEnd(start, end);
+
+    if (routeResponse.code != null) {
+      final geometry = routeResponse.routes[0].geometry;
+      final distance = routeResponse.routes[0].distance;
+      final duration = routeResponse.routes[0].duration;
+
+      final points = Poly.Polyline.Decode(encodedString: geometry, precision: 6).decodedCoords;
+      final coords = points.map((e) => LatLng(e[0], e[1])).toList();
+
+      BlocProvider.of<MapaBloc>(context).add(OnBuildRoute(
+        coords: coords,
+        distance: distance,
+        duration: duration,
+      ));
+    } else {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("Route not founded"),
+        action: SnackBarAction(
+          label: "OK",
+          onPressed: Scaffold.of(context).hideCurrentSnackBar,
+        ),
+      ));
+    }
+    Navigator.pop(context);
+    BlocProvider.of<SearchBloc>(context).add(OnAddHistory(result));
   }
 }

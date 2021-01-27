@@ -87,6 +87,7 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
   }
 
   Stream<MapaState> _onBuildRoute(OnBuildRoute event) async* {
+    moverCamara(event.coords.last);
     this._miRutaDest = this._miRutaDest.copyWith(pointsParam: event.coords);
     final currentPolylines = state.polylines;
     currentPolylines["mi_ruta_dest"] = this._miRutaDest;
