@@ -70,20 +70,24 @@ class _BuildManualMarker extends StatelessWidget {
 
     final start = BlocProvider.of<MyUbicationBloc>(context).state.latLng;
     final end = BlocProvider.of<MapaBloc>(context).state.centralUbication;
-
+    final infoResponse = await trafficService.getCordInfo(end);
     final routeResponse = await trafficService.getCoordsStartEnd(start, end);
     if (routeResponse.code != null) {
       final geometry = routeResponse.routes[0].geometry;
       final duration = routeResponse.routes[0].duration;
       final distance = routeResponse.routes[0].distance;
+      final nombreDest = infoResponse.features[0].text;
       // decodificar los puntos del geometry
       final points = Poly.Polyline.Decode(encodedString: geometry, precision: 6).decodedCoords;
       final List<LatLng> coordList = points.map((punto) => LatLng(punto[0], punto[1])).toList();
-      BlocProvider.of<MapaBloc>(context).add(OnBuildRoute(
-        coords: coordList,
-        distance: distance,
-        duration: duration,
-      ));
+      BlocProvider.of<MapaBloc>(context).add(
+        OnBuildRoute(
+          coordList,
+          distance,
+          duration,
+          nombreDest,
+        ),
+      );
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text("Route not founded"),

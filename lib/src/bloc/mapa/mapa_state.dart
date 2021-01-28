@@ -10,6 +10,7 @@ class MapaState {
   // Polylines
 
   final Map<String, Polyline> polylines;
+  final Map<String, Marker> markers;
 
   MapaState({
     this.mapaReady = false,
@@ -17,13 +18,16 @@ class MapaState {
     this.seguirUbicacion = false,
     this.centralUbication,
     Map<String, Polyline> polylines,
-  }) : this.polylines = polylines ?? new Map();
+    Map<String, Marker> markers,
+  })  : this.polylines = polylines ?? new Map(),
+        this.markers = markers ?? new Map();
   MapaState copyWith({
     bool mapaReady,
     bool drawRoute,
     bool seguirUbicacion,
     LatLng centralUbication,
     Map<String, Polyline> polylines,
+    Map<String, Marker> markers,
   }) =>
       MapaState(
         mapaReady: mapaReady ?? this.mapaReady,
@@ -31,5 +35,6 @@ class MapaState {
         seguirUbicacion: seguirUbicacion ?? this.seguirUbicacion,
         centralUbication: centralUbication ?? this.centralUbication,
         polylines: polylines ?? this.polylines,
+        markers: markers ?? this.markers,
       );
 }

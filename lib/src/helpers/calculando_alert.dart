@@ -3,6 +3,7 @@ part of "helpers.dart";
 void calculandoAlert(BuildContext context) {
   if (Platform.isAndroid) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Wait Please"),

@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart' show Colors;
+import 'package:flutter/material.dart' show Colors, Offset;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapas_app/src/helpers/helpers.dart';
 import 'package:mapas_app/src/themes/uber_map_theme.dart';
 import 'package:meta/meta.dart';
 
@@ -91,9 +92,30 @@ class MapaBloc extends Bloc<MapaEvent, MapaState> {
     this._miRutaDest = this._miRutaDest.copyWith(pointsParam: event.coords);
     final currentPolylines = state.polylines;
     currentPolylines["mi_ruta_dest"] = this._miRutaDest;
+    // Icono inicio
+    final iconStart = await getMarkerStartIcon(event.duration.floor());
+    final iconEnd = await getMarkerEndIcon(event.nombreDest, event.distance);
+
+    // marcadores
+    final markerInicio = Marker(
+      markerId: MarkerId("inicio"),
+      position: event.coords.first,
+      icon: iconStart,
+      anchor: Offset(0, 0.9),
+    );
+    final markerFinal = Marker(
+      markerId: MarkerId("final"),
+      position: event.coords.last,
+      icon: iconEnd,
+      anchor: Offset(0, 0.9),
+    );
+    final markers = {...state.markers};
+    markers["inicio"] = markerInicio;
+    markers["final"] = markerFinal;
+
     yield state.copyWith(
       polylines: currentPolylines,
-      // TODO: Markers
+      markers: markers,
     );
   }
 }

@@ -55,6 +55,7 @@ class SearchBar extends StatelessWidget {
     final start = BlocProvider.of<MyUbicationBloc>(context).state.latLng;
     final end = result.latLng;
 
+    // final infoReponse = await TrafficService().getCordInfo(end);
     final routeResponse = await TrafficService().getCoordsStartEnd(start, end);
 
     if (routeResponse.code != null) {
@@ -62,13 +63,16 @@ class SearchBar extends StatelessWidget {
       final distance = routeResponse.routes[0].distance;
       final duration = routeResponse.routes[0].duration;
 
+      final nombreDest = result.nombreDest;
+
       final points = Poly.Polyline.Decode(encodedString: geometry, precision: 6).decodedCoords;
       final coords = points.map((e) => LatLng(e[0], e[1])).toList();
 
       BlocProvider.of<MapaBloc>(context).add(OnBuildRoute(
-        coords: coords,
-        distance: distance,
-        duration: duration,
+        coords,
+        distance,
+        duration,
+        nombreDest,
       ));
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(

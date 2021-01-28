@@ -13,8 +13,9 @@ class OnBuildRoute extends MapaEvent {
   final List<LatLng> coords;
   final double distance;
   final double duration;
+  final String nombreDest;
 
-  OnBuildRoute({this.coords, this.distance, this.duration});
+  OnBuildRoute(this.coords, this.distance, this.duration, this.nombreDest);
 }
 
 class OnMapMoved extends MapaEvent {
